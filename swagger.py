@@ -3,31 +3,37 @@ class Swagger:
   def __init__(self):
     self.hosts = {}
 
-  def add_host(self, req):
+  def get_host(self, req):
+
     if req.host not in self.hosts:
       self.hosts[req.host] = {
         'host': req.host,
         'paths': {},
         'schemes': []
       }
+    return self.hosts[req.host]
 
-  def add_path(self, req):
-     if req.path not in self.hosts[req.host]['paths']:
-       self.hosts[req.host]['paths'][req.path] = {}
+  def get_path(self, req):
+     host = self.get_host(req)
 
-  def add_method(self, req):
+     if req.path not in host['paths']:
+       host['paths'][req.path] = {}
+
+     return host['paths'][req.path]
+
+  def get_method(self, req):
      method = req.method.lower()
-     if method not in self.hosts[req.host]['paths'][req.path]:
-       self.hosts[req.host]['paths'][req.path][method] = {
+     path = self.get_path(req)
+     if method not in path:
+       path[method] = {
          'consumes': [],
          'parameters': [],
          'responses': {}
        }
+     return path[method]
 
   def parse_request(self, req):
-    self.add_host(req)
-    self.add_path(req)
-    self.add_method(req)
+    self.get_method(req)
 
   def request(self, flow):
     self.parse_request(flow.request)
