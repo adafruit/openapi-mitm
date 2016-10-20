@@ -5,17 +5,16 @@ on real web traffic.
 
 ## Setup
 
-You will need a recent version of node.js:
+You will need to install the latest version of `mitmproxy`:
 
 ```sh
-$ node -v
-v6.8.1
+$ pip install mitmproxy
 ```
 
-Clone this repo, and run:
+Clone this repo:
 
 ```sh
-$ npm install
+git clone git@github.com:adafruit/swagger-mitm.git && cd swagger-mitm
 ```
 
 ## Usage
@@ -23,14 +22,14 @@ $ npm install
 Run the following command to start the server:
 
 ```sh
-$ npm start
+$ mitmdump -s swagger.py
 ```
 
 Configure your computer to use the following proxy info:
 
 ```
-HTTP: 127.0.0.1 port 8888
-HTTPS: 127.0.0.1 port 8889
+HTTP: 127.0.0.1 port 8080
+HTTPS: 127.0.0.1 port 8080
 ```
 
 ## HSTS Reset
