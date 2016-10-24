@@ -40,15 +40,28 @@ class Swagger:
 
      return path[method]
 
+  def parse_query(self, req):
+    method = self.get_method(req)
+    for param in req.query:
+      if not any(existing['name'] == param for existing in method['parameters']):
+        method['parameters'].append({
+          'in': 'query',
+          'name': param,
+          'type': 'string'
+        })
+
   def parse_request(self, req):
-    self.get_method(req)
+    self.parse_query(req)
 
   def print_debug(self):
     for host in self.hosts:
       print(self.hosts[host]['host'])
 
       for path in self.hosts[host]['paths']:
-        print('  - {0}'.format(path))
+        for method in self.hosts[host]['paths'][path]:
+          print('  [{0}]: {1}'.format(method, path))
+          for param in self.hosts[host]['paths'][path][method]['parameters']:
+            print('    - ({0}): {1}'.format(param['in'], param['name']))
 
     print('--------------------------------')
 
