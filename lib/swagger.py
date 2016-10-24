@@ -1,8 +1,11 @@
 import json
+import argparse
+import os
 
 class Swagger:
 
-  def __init__(self):
+  def __init__(self, target):
+    self.target = target
     self.hosts = {}
 
   def get_host(self, req):
@@ -26,30 +29,34 @@ class Swagger:
     return self.hosts[req.host]
 
   def get_path(self, req):
-     host = self.get_host(req)
+    host = self.get_host(req)
 
-     if '?' in req.path:
-       path = req.path[:req.path.find('?')]
-     else:
-       path = req.path
+    if '?' in req.path:
+      path = req.path[:req.path.find('?')]
+    else:
+      path = req.path
 
-     if path not in host['paths']:
-       host['paths'][path] = {}
+    if path not in host['paths']:
+      host['paths'][path] = {}
 
-     return host['paths'][path]
+    return host['paths'][path]
 
   def get_method(self, req):
-     method = req.method.lower()
-     path = self.get_path(req)
+    method = req.method.lower()
+    path = self.get_path(req)
 
-     if method not in path:
-       path[method] = {
-         'consumes': [],
-         'parameters': [],
-         'responses': {}
+    if method not in path:
+      path[method] = {
+        'consumes': [],
+        'parameters': [],
+        'responses': {
+          'default': {
+            'description': 'Default response'
+          }
+        }
        }
 
-     return path[method]
+    return path[method]
 
   def parse_query(self, req):
     method = self.get_method(req)
@@ -97,30 +104,47 @@ class Swagger:
 
 
   def parse_request(self, req):
+
+    if self.is_static(req):
+      return
+
     self.parse_query(req)
     self.parse_multipart_form(req)
     self.parse_urlencoded_form(req)
 
-  def print_debug(self):
+  def is_static(self, req):
+
+    if '?' in req.path:
+      path = req.path[:req.path.find('?')]
+    else:
+      path = req.path
+
+    return path.endswith(('.js', '.css', '.jpg', '.jpeg', '.png', '.gif'))
+
+  def print_debug(self, req):
+    print('[{0}]: {1}'.format(req.method, req.pretty_url))
+
+  def write_json(self):
+    if not os.path.isdir('./output'):
+      os.mkdir('./output')
+
     for host in self.hosts:
-      print(self.hosts[host]['host'])
-
-      for path in self.hosts[host]['paths']:
-        for method in self.hosts[host]['paths'][path]:
-          print('  [{0}]: {1}'.format(method, path))
-          for param in self.hosts[host]['paths'][path][method]['parameters']:
-            print('    - ({0}): {1}'.format(param['in'], param['name']))
-
-    print('--------------------------------')
-
-  def print_json(self):
-    for host in self.hosts:
-      print('{0}\n\n'.format(json.dumps(self.hosts[host])))
+      target = open('./output/{0}.json'.format(host), 'w')
+      target.truncate()
+      target.write(json.dumps(self.hosts[host], sort_keys=True, indent=2, separators=(',', ': ')))
 
   def request(self, flow):
+
+    if flow.request.host != self.target:
+      return
+
     self.parse_request(flow.request)
-    self.print_json()
+    self.print_debug(flow.request)
+    self.write_json()
 
 
 def start():
-    return Swagger()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('host', type=str)
+    args = parser.parse_args()
+    return Swagger(args.host)
