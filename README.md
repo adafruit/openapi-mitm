@@ -19,17 +19,17 @@ git clone git@github.com:adafruit/swagger-mitm.git && cd swagger-mitm
 
 ## Usage
 
-Run the following command to start the server:
+Run the following command to start the server and target `www.adafruit.com`:
 
 ```sh
-$ ./mitm
+$ ./mitm www.adafruit.com
 ```
 
 Configure your computer to use the following proxy info:
 
 ```
-HTTP: 127.0.0.1 port 8080
-HTTPS: 127.0.0.1 port 8080
+HTTP: 127.0.0.1 port 8081
+HTTPS: 127.0.0.1 port 8081
 ```
 
 ## HSTS Reset
