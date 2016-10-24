@@ -32,6 +32,12 @@ HTTP: 127.0.0.1 port 8081
 HTTPS: 127.0.0.1 port 8081
 ```
 
+Use your web client to generate traffic.
+
+## Output
+
+JSON output will be written for each host in the `./output` folder. You can view and edit the generated JSON using the [Swagger Editor][4].
+
 ## HSTS Reset
 
 You may need to clear HSTS for target domains in Chrome: `chrome://net-internals/#hsts`. FireFox
@@ -45,3 +51,4 @@ Copyright (c) 2016 [Adafruit Industries](https://adafruit.com). Licensed under t
 [1]: http://swagger.io/
 [2]: https://openapis.org/
 [3]: https://mitmproxy.org/
+[4]: http://editor.swagger.io/
