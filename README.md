@@ -22,7 +22,7 @@ git clone git@github.com:adafruit/swagger-mitm.git && cd swagger-mitm
 Run the following command to start the server:
 
 ```sh
-$ mitmdump -s swagger.py
+$ ./mitm
 ```
 
 Configure your computer to use the following proxy info:
