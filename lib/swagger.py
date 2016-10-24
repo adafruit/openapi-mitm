@@ -105,9 +105,6 @@ class Swagger:
 
   def parse_request(self, req):
 
-    if self.is_static(req):
-      return
-
     self.parse_query(req)
     self.parse_multipart_form(req)
     self.parse_urlencoded_form(req)
@@ -136,6 +133,9 @@ class Swagger:
   def request(self, flow):
 
     if flow.request.host != self.target:
+      return
+
+    if self.is_static(flow.request):
       return
 
     self.parse_request(flow.request)
