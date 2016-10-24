@@ -1,7 +1,7 @@
-# OpenAPI/Swagger MITM Proxy
+# OpenAPI MITM Proxy
 
-This tool will generate [Swagger][1]/[OpenAPI Initiative (OAI)][2] docs based
-on real web traffic.
+This tool will generate [OpenAPI Initiative][2] ([Swagger][1]) docs based
+on web traffic.
 
 ## Setup
 
